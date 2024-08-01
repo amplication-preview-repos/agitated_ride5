@@ -19,6 +19,7 @@ import {
 } from "class-validator";
 import { AppointmentUpdateManyWithoutCustomersInput } from "./AppointmentUpdateManyWithoutCustomersInput";
 import { Type } from "class-transformer";
+import { BikeUpdateManyWithoutCustomersInput } from "./BikeUpdateManyWithoutCustomersInput";
 
 @InputType()
 class CustomerUpdateInput {
@@ -68,6 +69,18 @@ class CustomerUpdateInput {
     nullable: true,
   })
   email?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => BikeUpdateManyWithoutCustomersInput,
+  })
+  @ValidateNested()
+  @Type(() => BikeUpdateManyWithoutCustomersInput)
+  @IsOptional()
+  @Field(() => BikeUpdateManyWithoutCustomersInput, {
+    nullable: true,
+  })
+  fahrrad?: BikeUpdateManyWithoutCustomersInput;
 
   @ApiProperty({
     required: false,

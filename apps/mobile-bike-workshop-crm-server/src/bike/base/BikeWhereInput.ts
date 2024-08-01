@@ -13,7 +13,8 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { IsOptional, ValidateNested } from "class-validator";
+import { CustomerListRelationFilter } from "../../customer/base/CustomerListRelationFilter";
 import { StringFilter } from "../../util/StringFilter";
 import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
 
@@ -106,6 +107,18 @@ class BikeWhereInput {
     nullable: true,
   })
   crank?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => CustomerListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => CustomerListRelationFilter)
+  @IsOptional()
+  @Field(() => CustomerListRelationFilter, {
+    nullable: true,
+  })
+  customers?: CustomerListRelationFilter;
 
   @ApiProperty({
     required: false,

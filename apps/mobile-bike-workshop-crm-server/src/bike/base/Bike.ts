@@ -16,9 +16,11 @@ import {
   MaxLength,
   IsOptional,
   IsDate,
+  ValidateNested,
   IsBoolean,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { Customer } from "../../customer/base/Customer";
 
 @ObjectType()
 class Bike {
@@ -125,6 +127,15 @@ class Bike {
   @Type(() => Date)
   @Field(() => Date)
   createdAt!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Customer],
+  })
+  @ValidateNested()
+  @Type(() => Customer)
+  @IsOptional()
+  customers?: Array<Customer>;
 
   @ApiProperty({
     required: false,

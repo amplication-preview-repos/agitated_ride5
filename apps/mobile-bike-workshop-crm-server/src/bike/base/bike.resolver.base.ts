@@ -26,6 +26,8 @@ import { BikeFindUniqueArgs } from "./BikeFindUniqueArgs";
 import { CreateBikeArgs } from "./CreateBikeArgs";
 import { UpdateBikeArgs } from "./UpdateBikeArgs";
 import { DeleteBikeArgs } from "./DeleteBikeArgs";
+import { CustomerFindManyArgs } from "../../customer/base/CustomerFindManyArgs";
+import { Customer } from "../../customer/base/Customer";
 import { BikeService } from "../bike.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Bike)
@@ -130,5 +132,25 @@ export class BikeResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Customer], { name: "customers" })
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "read",
+    possession: "any",
+  })
+  async findCustomers(
+    @graphql.Parent() parent: Bike,
+    @graphql.Args() args: CustomerFindManyArgs
+  ): Promise<Customer[]> {
+    const results = await this.service.findCustomers(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

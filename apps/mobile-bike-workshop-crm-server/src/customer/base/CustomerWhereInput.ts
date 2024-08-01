@@ -15,6 +15,7 @@ import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
 import { AppointmentListRelationFilter } from "../../appointment/base/AppointmentListRelationFilter";
+import { BikeListRelationFilter } from "../../bike/base/BikeListRelationFilter";
 import { StringFilter } from "../../util/StringFilter";
 
 @InputType()
@@ -63,6 +64,18 @@ class CustomerWhereInput {
     nullable: true,
   })
   email?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => BikeListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => BikeListRelationFilter)
+  @IsOptional()
+  @Field(() => BikeListRelationFilter, {
+    nullable: true,
+  })
+  fahrrad?: BikeListRelationFilter;
 
   @ApiProperty({
     required: false,

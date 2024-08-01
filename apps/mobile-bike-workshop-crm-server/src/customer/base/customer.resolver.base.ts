@@ -28,6 +28,8 @@ import { UpdateCustomerArgs } from "./UpdateCustomerArgs";
 import { DeleteCustomerArgs } from "./DeleteCustomerArgs";
 import { AppointmentFindManyArgs } from "../../appointment/base/AppointmentFindManyArgs";
 import { Appointment } from "../../appointment/base/Appointment";
+import { BikeFindManyArgs } from "../../bike/base/BikeFindManyArgs";
+import { Bike } from "../../bike/base/Bike";
 import { CustomerService } from "../customer.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Customer)
@@ -156,6 +158,26 @@ export class CustomerResolverBase {
     @graphql.Args() args: AppointmentFindManyArgs
   ): Promise<Appointment[]> {
     const results = await this.service.findAppointments(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Bike], { name: "fahrrad" })
+  @nestAccessControl.UseRoles({
+    resource: "Bike",
+    action: "read",
+    possession: "any",
+  })
+  async findFahrrad(
+    @graphql.Parent() parent: Customer,
+    @graphql.Args() args: BikeFindManyArgs
+  ): Promise<Bike[]> {
+    const results = await this.service.findFahrrad(parent.id, args);
 
     if (!results) {
       return [];

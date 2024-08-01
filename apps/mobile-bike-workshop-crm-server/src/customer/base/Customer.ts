@@ -20,6 +20,7 @@ import {
 } from "class-validator";
 import { Appointment } from "../../appointment/base/Appointment";
 import { Type } from "class-transformer";
+import { Bike } from "../../bike/base/Bike";
 
 @ObjectType()
 class Customer {
@@ -74,6 +75,15 @@ class Customer {
     nullable: true,
   })
   email!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Bike],
+  })
+  @ValidateNested()
+  @Type(() => Bike)
+  @IsOptional()
+  fahrrad?: Array<Bike>;
 
   @ApiProperty({
     required: false,

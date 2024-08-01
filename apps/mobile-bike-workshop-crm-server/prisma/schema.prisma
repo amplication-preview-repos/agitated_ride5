@@ -13,6 +13,7 @@ model Customer {
   city         String?
   createdAt    DateTime      @default(now())
   email        String?
+  fahrrad      Bike[]
   firstName    String?
   id           String        @id @default(cuid())
   lastName     String?
@@ -30,7 +31,8 @@ model Bike {
   chainGuide     String?
   charger        String?
   crank          String?
-  createdAt      DateTime @default(now())
+  createdAt      DateTime   @default(now())
+  customers      Customer[]
   damper         String?
   display        String?
   fork           String?
@@ -38,7 +40,7 @@ model Bike {
   gear           String?
   handlebar      String?
   headset        String?
-  id             String   @id @default(cuid())
+  id             String     @id @default(cuid())
   kilometers     String?
   lever          String?
   model          String?
@@ -50,7 +52,7 @@ model Bike {
   seatPostRemote Boolean?
   stem           String?
   tires          String?
-  updatedAt      DateTime @updatedAt
+  updatedAt      DateTime   @updatedAt
   wheelSet       String?
   year           String?
 }

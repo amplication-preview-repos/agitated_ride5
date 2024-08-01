@@ -29,6 +29,9 @@ import { CustomerUpdateInput } from "./CustomerUpdateInput";
 import { AppointmentFindManyArgs } from "../../appointment/base/AppointmentFindManyArgs";
 import { Appointment } from "../../appointment/base/Appointment";
 import { AppointmentWhereUniqueInput } from "../../appointment/base/AppointmentWhereUniqueInput";
+import { BikeFindManyArgs } from "../../bike/base/BikeFindManyArgs";
+import { Bike } from "../../bike/base/Bike";
+import { BikeWhereUniqueInput } from "../../bike/base/BikeWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -313,6 +316,129 @@ export class CustomerControllerBase {
   ): Promise<void> {
     const data = {
       appointments: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateCustomer({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/fahrrad")
+  @ApiNestedQuery(BikeFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Bike",
+    action: "read",
+    possession: "any",
+  })
+  async findFahrrad(
+    @common.Req() request: Request,
+    @common.Param() params: CustomerWhereUniqueInput
+  ): Promise<Bike[]> {
+    const query = plainToClass(BikeFindManyArgs, request.query);
+    const results = await this.service.findFahrrad(params.id, {
+      ...query,
+      select: {
+        battery: true,
+        brakes: true,
+        brand: true,
+        cassette: true,
+        chain: true,
+        chainGuide: true,
+        charger: true,
+        crank: true,
+        createdAt: true,
+        damper: true,
+        display: true,
+        fork: true,
+        frame: true,
+        gear: true,
+        handlebar: true,
+        headset: true,
+        id: true,
+        kilometers: true,
+        lever: true,
+        model: true,
+        motor: true,
+        pedalArm: true,
+        remote: true,
+        seat: true,
+        seatPost: true,
+        seatPostRemote: true,
+        stem: true,
+        tires: true,
+        updatedAt: true,
+        wheelSet: true,
+        year: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/fahrrad")
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
+  async connectFahrrad(
+    @common.Param() params: CustomerWhereUniqueInput,
+    @common.Body() body: BikeWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      fahrrad: {
+        connect: body,
+      },
+    };
+    await this.service.updateCustomer({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/fahrrad")
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
+  async updateFahrrad(
+    @common.Param() params: CustomerWhereUniqueInput,
+    @common.Body() body: BikeWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      fahrrad: {
+        set: body,
+      },
+    };
+    await this.service.updateCustomer({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/fahrrad")
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectFahrrad(
+    @common.Param() params: CustomerWhereUniqueInput,
+    @common.Body() body: BikeWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      fahrrad: {
         disconnect: body,
       },
     };

@@ -10,10 +10,12 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
+
 import {
   Prisma,
   Customer as PrismaCustomer,
   Appointment as PrismaAppointment,
+  Bike as PrismaBike,
 } from "@prisma/client";
 
 export class CustomerServiceBase {
@@ -58,5 +60,16 @@ export class CustomerServiceBase {
         where: { id: parentId },
       })
       .appointments(args);
+  }
+
+  async findFahrrad(
+    parentId: string,
+    args: Prisma.BikeFindManyArgs
+  ): Promise<PrismaBike[]> {
+    return this.prisma.customer
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .fahrrad(args);
   }
 }
